@@ -1,0 +1,85 @@
+name: reviewdog
+
+on: [pull_request]
+
+jobs:
+  markdownlint:
+    name: runner / markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: markdownlint
+        uses: reviewdog/action-markdownlint@v0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-check
+          markdownlint_flags: "docs --disable MD013 MD007 MD033 MD007 MD046 MD024 MD026 MD041 MD011 MD036 MD042"
+
+  detect-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: detect-secrets
+        uses: reviewdog/action-detect-secrets@master
+        with:
+          reporter: github-pr-review # Change reporter.
+
+  yamllint:
+    name: runner / yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: yamllint
+        uses: reviewdog/action-yamllint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Change reporter.
+          yamllint_flags: 'src/'
+
+  tfsec:
+    name: runner / tfsec
+    runs-on: ubuntu-latest # Windows and macOS are also supported
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Run tfsec with reviewdog output on the PR
+        uses: reviewdog/action-tfsec@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          working_directory: my_directory # Change working directory
+          level: info # Get more output from reviewdog
+          reporter: github-pr-review # Change reviewdog reporter
+          filter_mode: nofilter # Check all files, not just the diff
+          fail_on_error: true # Fail action if errors are found
+          flags: -tee # Add debug flag to reviewdog
+          tfsec_flags: "" # Optional
+          
+  terraform_validate:
+    name: runner / terraform validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reviewdog/action-terraform-validate@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          # Change reviewdog reporter if you need [github-pr-check,github-check,github-pr-review].
+          reporter: github-pr-review
+          # Change reporter level if you need.
+          # GitHub Status Check won't become failure with warning.
+          level: warning
+
+  shellcheck:
+    name: runner / shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        uses: reviewdog/action-shellcheck@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Change reporter.
+          path: "." # Optional.
+          pattern: "*.sh" # Optional.
+          exclude: "./.git/*" # Optional.
+          check_all_files_with_shebangs: "false" # Optional.

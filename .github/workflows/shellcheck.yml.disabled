@@ -1,0 +1,17 @@
+#VERSION=0.1
+name: CI
+
+on: push
+
+env:
+    SVC_NAME: sk-example-app
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master

@@ -6,6 +6,10 @@ on:
       - opened
       - synchronize
 permissions: write-all
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_name != github.event.repository.default_branch }}
+
 jobs:
   review:
     runs-on: ubuntu-latest

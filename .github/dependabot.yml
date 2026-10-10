@@ -3,7 +3,7 @@ updates:
 - package-ecosystem: pip
   directory: /
   schedule:
-    interval: daily
+    interval: monthly
   groups:
     pip-version:
       applies-to: version-updates
@@ -16,7 +16,7 @@ updates:
 - package-ecosystem: github-actions
   directory: /
   schedule:
-    interval: daily
+    interval: monthly
   groups:
     github-actions-version:
       applies-to: version-updates
@@ -29,7 +29,7 @@ updates:
 - package-ecosystem: docker
   directory: /
   schedule:
-    interval: daily
+    interval: monthly
   groups:
     docker-version:
       applies-to: version-updates
@@ -42,7 +42,7 @@ updates:
 - package-ecosystem: terraform
   directory: /
   schedule:
-    interval: daily
+    interval: monthly
   groups:
     terraform-version:
       applies-to: version-updates
